@@ -1,0 +1,98 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import {
+    LayoutDashboard,
+    BookOpen,
+    PenTool,
+    Mic,
+    Headphones,
+    LogOut,
+    GraduationCap
+} from 'lucide-react'
+
+export default function DashboardLayout({
+    children,
+}: {
+    children: React.ReactNode
+}) {
+    const pathname = usePathname()
+    const router = useRouter()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+        // Check if user is logged in
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
+        if (!isLoggedIn && !pathname.includes('/tests/')) {
+            router.push('/login')
+        }
+    }, [pathname, router])
+
+    const handleSignOut = () => {
+        localStorage.removeItem('isLoggedIn')
+        localStorage.removeItem('userEmail')
+        localStorage.removeItem('userName')
+        router.push('/')
+    }
+
+    const sidebarItems = [
+        { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
+        { icon: BookOpen, label: 'All Tests', href: '/tests' },
+        { icon: BookOpen, label: 'Reading', href: '/tests/1' },
+        { icon: PenTool, label: 'Writing', href: '/tests/2' },
+        { icon: Mic, label: 'Speaking', href: '/tests/3' },
+        { icon: Headphones, label: 'Listening', href: '/tests/4' },
+    ]
+
+    if (!mounted) return null
+
+    return (
+        <div className="min-h-screen flex bg-muted/10">
+            {/* Sidebar */}
+            <aside className="hidden md:flex flex-col w-64 bg-background border-r fixed inset-y-0 z-30">
+                <div className="h-16 flex items-center px-6 border-b">
+                    <Link href="/" className="flex items-center gap-2 font-bold text-lg">
+                        <GraduationCap className="h-6 w-6 text-primary" />
+                        <span>EngNovate</span>
+                    </Link>
+                </div>
+
+                <div className="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
+                    {sidebarItems.map((item) => (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${pathname === item.href
+                                    ? 'bg-primary/10 text-primary'
+                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                }`}
+                        >
+                            <item.icon className="h-4 w-4" />
+                            {item.label}
+                        </Link>
+                    ))}
+                </div>
+
+                <div className="p-4 border-t">
+                    <Button
+                        variant="ghost"
+                        className="w-full justify-start text-muted-foreground hover:text-red-500 hover:bg-red-50"
+                        onClick={handleSignOut}
+                    >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Sign Out
+                    </Button>
+                </div>
+            </aside>
+
+            {/* Main Content */}
+            <main className="flex-1 md:ml-64">
+                {children}
+            </main>
+        </div>
+    )
+}
