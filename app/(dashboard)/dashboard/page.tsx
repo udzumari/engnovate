@@ -16,11 +16,15 @@ export default function DashboardPage() {
     const { t, language, setLanguage } = useLanguage()
 
     // User profile state
-    const [userProfile, setUserProfile] = useState({
+    const [userProfile, setUserProfile] = useState<{
+        name: string
+        email: string
+        phone: string
+        avatar?: string
+    }>({
         name: 'Student User',
         email: 'student@engnovate.com',
-        phone: '+998 90 123 45 67',
-        avatar: undefined
+        phone: '+998 90 123 45 67'
     })
 
     // Study plans state
