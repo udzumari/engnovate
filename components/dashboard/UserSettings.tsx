@@ -10,7 +10,7 @@ import { Camera, Mail, Phone, User, Globe } from 'lucide-react'
 import { useLanguage } from '@/lib/LanguageContext'
 import { translations, Language } from '@/lib/translations'
 
-interface UserProfile {
+export interface UserProfile {
     name: string
     email: string
     phone: string

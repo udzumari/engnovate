@@ -7,7 +7,7 @@ import { BookOpen, Clock, Trophy, TrendingUp, Calendar as CalendarIcon, Settings
 import { useLanguage } from '@/lib/LanguageContext'
 import { Calendar } from '@/components/dashboard/Calendar'
 import { StudyPlans, StudyPlan } from '@/components/dashboard/StudyPlans'
-import { UserSettings } from '@/components/dashboard/UserSettings'
+import { UserSettings, UserProfile } from '@/components/dashboard/UserSettings'
 import Link from 'next/link'
 
 export default function DashboardPage() {
@@ -16,12 +16,7 @@ export default function DashboardPage() {
     const { t, language, setLanguage } = useLanguage()
 
     // User profile state
-    const [userProfile, setUserProfile] = useState<{
-        name: string
-        email: string
-        phone: string
-        avatar?: string
-    }>({
+    const [userProfile, setUserProfile] = useState<UserProfile>({
         name: 'Student User',
         email: 'student@engnovate.com',
         phone: '+998 90 123 45 67'
@@ -113,7 +108,7 @@ export default function DashboardPage() {
         setStudyPlans(studyPlans.map(p => p.id === id ? { ...p, ...updates } : p))
     }
 
-    const handleUpdateProfile = (profile: typeof userProfile) => {
+    const handleUpdateProfile = (profile: UserProfile) => {
         setUserProfile(profile)
         localStorage.setItem('userProfile', JSON.stringify(profile))
     }
