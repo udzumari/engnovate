@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Master IELTS with AI-powered scoring and real exam simulations.",
 };
 
+import { LanguageProvider } from '@/lib/LanguageContext'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,7 +29,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );

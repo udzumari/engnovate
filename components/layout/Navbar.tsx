@@ -6,10 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Menu, GraduationCap } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { useLanguage } from '@/lib/LanguageContext'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 export function Navbar() {
     const pathname = usePathname()
     const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const { t } = useLanguage()
 
     useEffect(() => {
         const loggedIn = localStorage.getItem('isLoggedIn') === 'true'
@@ -17,9 +20,11 @@ export function Navbar() {
     }, [])
 
     const routes = [
-        { href: '/dashboard', label: 'Dashboard' },
-        { href: '/tests', label: 'Tests' },
-        { href: '/pricing', label: 'Pricing' },
+        { href: '/tests', label: t('nav.tests') },
+        { href: '/features', label: t('nav.features') },
+        { href: '/pricing', label: t('nav.pricing') },
+        { href: '/reviews', label: t('nav.reviews') },
+        { href: '/about', label: t('nav.about') },
     ]
 
     return (
@@ -47,59 +52,63 @@ export function Navbar() {
                 </nav>
 
                 <div className="hidden md:flex items-center gap-4">
+                    <LanguageSwitcher />
                     {isLoggedIn ? (
                         <Button variant="ghost" asChild>
-                            <Link href="/dashboard">Dashboard</Link>
+                            <Link href="/dashboard">{t('nav.dashboard')}</Link>
                         </Button>
                     ) : (
                         <>
                             <Button variant="ghost" asChild>
-                                <Link href="/login">Log in</Link>
+                                <Link href="/login">{t('nav.login')}</Link>
                             </Button>
                             <Button asChild>
-                                <Link href="/register">Get Started</Link>
+                                <Link href="/register">{t('nav.getStarted')}</Link>
                             </Button>
                         </>
                     )}
                 </div>
 
                 {/* Mobile Nav */}
-                <Sheet>
-                    <SheetTrigger asChild className="md:hidden">
-                        <Button variant="ghost" size="icon">
-                            <Menu className="h-5 w-5" />
-                            <span className="sr-only">Toggle menu</span>
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="right">
-                        <div className="flex flex-col gap-4 mt-8">
-                            {routes.map((route) => (
-                                <Link
-                                    key={route.href}
-                                    href={route.href}
-                                    className="text-lg font-medium"
-                                >
-                                    {route.label}
-                                </Link>
-                            ))}
-                            <div className="h-px bg-border my-2" />
-                            {isLoggedIn ? (
-                                <Button asChild>
-                                    <Link href="/dashboard">Dashboard</Link>
-                                </Button>
-                            ) : (
-                                <>
-                                    <Button variant="ghost" asChild className="justify-start">
-                                        <Link href="/login">Log in</Link>
+                <div className="flex items-center gap-2 md:hidden">
+                    <LanguageSwitcher />
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <Menu className="h-5 w-5" />
+                                <span className="sr-only">Toggle menu</span>
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="right">
+                            <div className="flex flex-col gap-4 mt-8">
+                                {routes.map((route) => (
+                                    <Link
+                                        key={route.href}
+                                        href={route.href}
+                                        className="text-lg font-medium"
+                                    >
+                                        {route.label}
+                                    </Link>
+                                ))}
+                                <div className="h-px bg-border my-2" />
+                                {isLoggedIn ? (
+                                    <Button asChild>
+                                        <Link href="/dashboard">{t('nav.dashboard')}</Link>
                                     </Button>
-                                    <Button asChild className="justify-start">
-                                        <Link href="/register">Get Started</Link>
-                                    </Button>
-                                </>
-                            )}
-                        </div>
-                    </SheetContent>
-                </Sheet>
+                                ) : (
+                                    <>
+                                        <Button variant="ghost" asChild className="justify-start">
+                                            <Link href="/login">{t('nav.login')}</Link>
+                                        </Button>
+                                        <Button asChild className="justify-start">
+                                            <Link href="/register">{t('nav.getStarted')}</Link>
+                                        </Button>
+                                    </>
+                                )}
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                </div>
             </div>
         </header>
     )

@@ -7,77 +7,79 @@ import { Badge } from '@/components/ui/badge'
 import { Check, Sparkles, Zap, Crown } from 'lucide-react'
 import Link from 'next/link'
 import { Navbar } from '@/components/layout/Navbar'
-
-const plans = [
-    {
-        name: 'Free',
-        price: '$0',
-        period: 'forever',
-        description: 'Perfect for getting started',
-        icon: Zap,
-        features: [
-            '3 tests per day',
-            'Basic AI scoring',
-            'Reading & Listening tests',
-            'Community support',
-            'Progress tracking',
-        ],
-        limitations: [
-            'Limited AI feedback',
-            'No speaking tests',
-            'No writing tests',
-        ],
-        cta: 'Get Started Free',
-        href: '/register',
-        popular: false,
-    },
-    {
-        name: 'Pro',
-        price: '$19',
-        period: 'per month',
-        description: 'For serious IELTS preparation',
-        icon: Sparkles,
-        features: [
-            'Unlimited tests',
-            'Advanced AI scoring',
-            'All test types (Reading, Writing, Speaking, Listening)',
-            'Detailed feedback & suggestions',
-            'Progress analytics',
-            'Priority support',
-            'Downloadable reports',
-            'Study recommendations',
-        ],
-        limitations: [],
-        cta: 'Start Pro Trial',
-        href: '/register?plan=pro',
-        popular: true,
-    },
-    {
-        name: 'Premium',
-        price: '$49',
-        period: 'per month',
-        description: 'For institutions and serious learners',
-        icon: Crown,
-        features: [
-            'Everything in Pro',
-            'Personal IELTS coach',
-            '1-on-1 speaking sessions',
-            'Custom test creation',
-            'Batch test imports',
-            'Admin dashboard access',
-            'API access',
-            'White-label option',
-            'Dedicated support',
-        ],
-        limitations: [],
-        cta: 'Contact Sales',
-        href: '/contact',
-        popular: false,
-    },
-]
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function PricingPage() {
     const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly')
+    const { t } = useLanguage()
+
+    const plans = [
+        {
+            name: t('home.pricing.free.title'),
+            price: '$0',
+            period: 'forever',
+            description: t('home.pricing.free.desc'),
+            icon: Zap,
+            features: [
+                '3 tests per day',
+                'Basic AI scoring',
+                'Reading & Listening tests',
+                'Community support',
+                'Progress tracking',
+            ],
+            limitations: [
+                'Limited AI feedback',
+                'No speaking tests',
+                'No writing tests',
+            ],
+            cta: t('home.pricing.free.cta'),
+            href: '/register',
+            popular: false,
+        },
+        {
+            name: t('home.pricing.pro.title'),
+            price: '$19',
+            period: t('home.pricing.period.month'),
+            description: t('home.pricing.pro.desc'),
+            icon: Sparkles,
+            features: [
+                'Unlimited tests',
+                'Advanced AI scoring',
+                'All test types (Reading, Writing, Speaking, Listening)',
+                'Detailed feedback & suggestions',
+                'Progress analytics',
+                'Priority support',
+                'Downloadable reports',
+                'Study recommendations',
+            ],
+            limitations: [],
+            cta: t('home.pricing.pro.cta'),
+            href: '/register?plan=pro',
+            popular: true,
+        },
+        {
+            name: t('home.pricing.lifetime.title'),
+            price: '$49',
+            period: t('home.pricing.period.month'),
+            description: t('home.pricing.lifetime.desc'),
+            icon: Crown,
+            features: [
+                'Everything in Pro',
+                'Personal IELTS coach',
+                '1-on-1 speaking sessions',
+                'Custom test creation',
+                'Batch test imports',
+                'Admin dashboard access',
+                'API access',
+                'White-label option',
+                'Dedicated support',
+            ],
+            limitations: [],
+            cta: t('home.pricing.lifetime.cta'),
+            href: '/contact',
+            popular: false,
+        },
+    ]
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
@@ -87,12 +89,12 @@ export default function PricingPage() {
                 <div className="container mx-auto px-4">
                     {/* Header */}
                     <div className="text-center mb-16">
-                        <Badge className="mb-4" variant="outline">Pricing</Badge>
+                        <Badge className="mb-4" variant="outline">{t('nav.pricing')}</Badge>
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-                            Choose Your Plan
+                            {t('home.pricing.title')}
                         </h1>
                         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                            Start free, upgrade when you need more. All plans include access to our AI-powered scoring.
+                            {t('home.pricing.subtitle')}
                         </p>
                     </div>
 
@@ -131,7 +133,7 @@ export default function PricingPage() {
                                 >
                                     {plan.popular && (
                                         <div className="absolute -top-4 left-0 right-0 flex justify-center">
-                                            <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
+                                            <Badge className="bg-primary text-primary-foreground">{t('home.pricing.pro.badge')}</Badge>
                                         </div>
                                     )}
 
@@ -221,7 +223,7 @@ export default function PricingPage() {
 
             <footer className="py-8 border-t bg-muted/20">
                 <div className="container px-4 mx-auto text-center text-sm text-muted-foreground">
-                    <p>© {new Date().getFullYear()} EngNovate. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} EngNovate. {t('footer.rights')}</p>
                 </div>
             </footer>
         </div>

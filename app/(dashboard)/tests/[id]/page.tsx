@@ -8,6 +8,7 @@ import { ReadingTest } from '@/components/test/ReadingTest'
 import { WritingTest } from '@/components/test/WritingTest'
 import { SpeakingTest } from '@/components/test/SpeakingTest'
 import Link from 'next/link'
+import { getReadingTestById } from '@/data/reading-tests'
 
 // Mock data
 const mockTests: Record<string, any> = {
@@ -30,10 +31,38 @@ const mockTests: Record<string, any> = {
           <p>The British East India Company established tea plantations in India and Ceylon (now Sri Lanka) in the 19th century, breaking China's monopoly on tea production. This led to tea becoming more affordable and accessible to the general population. Today, tea is grown in over 60 countries, with China, India, Kenya, and Sri Lanka being the largest producers.</p>
         `,
                 questions: [
-                    { id: 'q1', type: 'multiple_choice', text: 'According to the passage, who is credited with discovering tea?', options: ['Shen Nung', 'Buddhist Monks', 'Portuguese traders', 'British merchants'] },
-                    { id: 'q2', type: 'true_false', text: 'Tea is the most popular beverage in the world.', options: ['True', 'False', 'Not Given'] },
-                    { id: 'q3', type: 'multiple_choice', text: 'When did tea drinking become popular in China?', options: ['2737 BC', 'Tang dynasty (618-907 AD)', '16th century', '19th century'] },
-                    { id: 'q4', type: 'true_false', text: 'The British East India Company established tea plantations to break China\'s monopoly.', options: ['True', 'False', 'Not Given'] },
+                    {
+                        id: 'q1',
+                        type: 'multiple_choice',
+                        text: 'According to the passage, who is credited with discovering tea?',
+                        options: ['Shen Nung', 'Buddhist Monks', 'Portuguese traders', 'British merchants'],
+                        correctAnswer: 'Shen Nung',
+                        explanation: 'The passage states that "Shen Nung, the Chinese emperor and herbalist, discovered tea in 2737 BC when a few leaves from a nearby wild tree blew into his pot of boiling water."'
+                    },
+                    {
+                        id: 'q2',
+                        type: 'true_false',
+                        text: 'Tea is the most popular beverage in the world.',
+                        options: ['True', 'False', 'Not Given'],
+                        correctAnswer: 'False',
+                        explanation: 'The passage clearly states that "Tea is one of the most popular beverages in the world, second only to water." This means water is the most popular, not tea.'
+                    },
+                    {
+                        id: 'q3',
+                        type: 'multiple_choice',
+                        text: 'When did tea drinking become popular in China?',
+                        options: ['2737 BC', 'Tang dynasty (618-907 AD)', '16th century', '19th century'],
+                        correctAnswer: 'Tang dynasty (618-907 AD)',
+                        explanation: 'The passage explicitly mentions "Tea drinking became popular in China during the Tang dynasty (618-907 AD)."'
+                    },
+                    {
+                        id: 'q4',
+                        type: 'true_false',
+                        text: 'The British East India Company established tea plantations to break China\'s monopoly.',
+                        options: ['True', 'False', 'Not Given'],
+                        correctAnswer: 'True',
+                        explanation: 'The passage states "The British East India Company established tea plantations in India and Ceylon (now Sri Lanka) in the 19th century, breaking China\'s monopoly on tea production."'
+                    },
                 ]
             }
         ]
@@ -77,22 +106,32 @@ export default function TestAttemptPage({ params }: { params: Promise<{ id: stri
     const { id } = use(params)
     const [timeLeft, setTimeLeft] = useState(60 * 60)
     const [mounted, setMounted] = useState(false)
+    const [isTimerRunning, setIsTimerRunning] = useState(true)
 
-    const testData = mockTests[id]
+    // Try to get reading test first, then fall back to mock tests
+    const readingTest = getReadingTestById(id)
+    const testData = readingTest || mockTests[id]
 
     useEffect(() => {
         setMounted(true)
         const timer = setInterval(() => {
-            setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0))
+            if (isTimerRunning) {
+                setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0))
+            }
         }, 1000)
         return () => clearInterval(timer)
-    }, [])
+    }, [isTimerRunning])
+
+    const handleTestSubmit = () => {
+        setIsTimerRunning(false)
+    }
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60)
         const secs = seconds % 60
         return `${mins}:${secs.toString().padStart(2, '0')}`
     }
+
 
     if (!mounted) return null
 
@@ -155,7 +194,7 @@ export default function TestAttemptPage({ params }: { params: Promise<{ id: stri
 
             {/* Test Content */}
             <div className="flex-1 overflow-hidden">
-                {testData.type === 'Reading' && <ReadingTest testData={testData} />}
+                {testData.type === 'Reading' && <ReadingTest testData={testData} onSubmit={handleTestSubmit} />}
                 {testData.type === 'Writing' && <WritingTest testData={testData} />}
                 {testData.type === 'Speaking' && <SpeakingTest testData={testData} />}
             </div>

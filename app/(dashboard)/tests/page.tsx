@@ -1,19 +1,58 @@
+'use client'
+
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Clock, BookOpen, PenTool, Mic, Headphones, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { useLanguage } from '@/lib/LanguageContext'
 
 // Mock data for tests
 const tests = [
     {
-        id: '1',
-        title: 'IELTS Academic Reading Test',
+        id: 'reading-16',
+        title: 'Cambridge 16 Reading Test 01',
         type: 'Reading',
         duration: '60 mins',
-        questions: 40,
+        questions: 7,
         difficulty: 'Medium',
-        description: 'Practice reading comprehension with authentic IELTS passages',
+        description: 'Why we need to protect polar bears - Complete reading passage with validation',
+    },
+    {
+        id: 'reading-17',
+        title: 'Cambridge 16 Reading Test 02',
+        type: 'Reading',
+        duration: '60 mins',
+        questions: 7,
+        difficulty: 'Medium',
+        description: 'The White Horse of Uffington - Ancient geoglyphs and their mysteries',
+    },
+    {
+        id: 'reading-18',
+        title: 'Cambridge 16 Reading Test 03',
+        type: 'Reading',
+        duration: '60 mins',
+        questions: 7,
+        difficulty: 'Medium',
+        description: 'The Future of Work - AI and automation in the workplace',
+    },
+    {
+        id: 'reading-19',
+        title: 'Cambridge 16 Reading Test 04',
+        type: 'Reading',
+        duration: '60 mins',
+        questions: 7,
+        difficulty: 'Medium',
+        description: 'Roman Shipbuilding and Navigation - Ancient maritime technology',
+    },
+    {
+        id: 'reading-20',
+        title: 'Cambridge 16 Reading Test 05',
+        type: 'Reading',
+        duration: '60 mins',
+        questions: 7,
+        difficulty: 'Medium',
+        description: 'The History of Glass - From ancient times to modern applications',
     },
     {
         id: '2',
@@ -59,13 +98,15 @@ const typeColors = {
 }
 
 export default function TestsPage() {
+    const { t } = useLanguage()
+
     return (
         <div className="p-8 space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Practice Tests</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.tests.title')}</h1>
                     <p className="text-muted-foreground mt-2">
-                        Select a test to start practicing. All tests are fully functional!
+                        {t('dashboard.tests.subtitle')}
                     </p>
                 </div>
             </div>
@@ -81,10 +122,10 @@ export default function TestsPage() {
                                 <div className="flex items-center justify-between mb-2">
                                     <Badge variant="outline" className={`${colorClass} border-0`}>
                                         <Icon className="mr-1 h-3 w-3" />
-                                        {test.type}
+                                        {t(`dashboard.tests.types.${test.type}`)}
                                     </Badge>
                                     <Badge variant="secondary">
-                                        {test.difficulty}
+                                        {t(`dashboard.tests.difficulty.${test.difficulty}`)}
                                     </Badge>
                                 </div>
                                 <CardTitle className="line-clamp-1">{test.title}</CardTitle>
@@ -93,7 +134,7 @@ export default function TestsPage() {
                                         <Clock className="h-3 w-3" /> {test.duration}
                                     </span>
                                     <span>•</span>
-                                    <span>{test.questions} Questions</span>
+                                    <span>{test.questions} {t('dashboard.tests.questions')}</span>
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="flex-1">
@@ -104,7 +145,7 @@ export default function TestsPage() {
                             <CardFooter>
                                 <Button className="w-full" asChild>
                                     <Link href={`/tests/${test.id}`}>
-                                        Start Test <ArrowRight className="ml-2 h-4 w-4" />
+                                        {t('dashboard.tests.start')} <ArrowRight className="ml-2 h-4 w-4" />
                                     </Link>
                                 </Button>
                             </CardFooter>

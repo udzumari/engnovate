@@ -13,6 +13,7 @@ import {
     LogOut,
     GraduationCap
 } from 'lucide-react'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function DashboardLayout({
     children,
@@ -22,6 +23,7 @@ export default function DashboardLayout({
     const pathname = usePathname()
     const router = useRouter()
     const [mounted, setMounted] = useState(false)
+    const { t } = useLanguage()
 
     useEffect(() => {
         setMounted(true)
@@ -40,12 +42,12 @@ export default function DashboardLayout({
     }
 
     const sidebarItems = [
-        { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
-        { icon: BookOpen, label: 'All Tests', href: '/tests' },
-        { icon: BookOpen, label: 'Reading', href: '/tests/1' },
-        { icon: PenTool, label: 'Writing', href: '/tests/2' },
-        { icon: Mic, label: 'Speaking', href: '/tests/3' },
-        { icon: Headphones, label: 'Listening', href: '/tests/4' },
+        { icon: LayoutDashboard, label: t('dashboard.sidebar.overview'), href: '/dashboard' },
+        { icon: BookOpen, label: t('dashboard.sidebar.allTests'), href: '/tests' },
+        { icon: BookOpen, label: t('dashboard.sidebar.reading'), href: '/tests/1' },
+        { icon: PenTool, label: t('dashboard.sidebar.writing'), href: '/tests/2' },
+        { icon: Mic, label: t('dashboard.sidebar.speaking'), href: '/tests/3' },
+        { icon: Headphones, label: t('dashboard.sidebar.listening'), href: '/tests/4' },
     ]
 
     if (!mounted) return null
@@ -67,8 +69,8 @@ export default function DashboardLayout({
                             key={item.href}
                             href={item.href}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${pathname === item.href
-                                    ? 'bg-primary/10 text-primary'
-                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                ? 'bg-primary/10 text-primary'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                 }`}
                         >
                             <item.icon className="h-4 w-4" />
@@ -84,7 +86,7 @@ export default function DashboardLayout({
                         onClick={handleSignOut}
                     >
                         <LogOut className="mr-2 h-4 w-4" />
-                        Sign Out
+                        {t('dashboard.sidebar.signOut')}
                     </Button>
                 </div>
             </aside>
