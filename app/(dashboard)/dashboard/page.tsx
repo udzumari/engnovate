@@ -8,12 +8,22 @@ import { useLanguage } from '@/lib/LanguageContext'
 import { Calendar } from '@/components/dashboard/Calendar'
 import { StudyPlans, StudyPlan } from '@/components/dashboard/StudyPlans'
 import { UserSettings, UserProfile } from '@/components/dashboard/UserSettings'
+import { initializeUserStats, getRecentTests, getTotalStudyTime, formatStudyTime, UserStats } from '@/lib/userProgress'
 import Link from 'next/link'
 
 export default function DashboardPage() {
     const [userName, setUserName] = useState('User')
     const [activeView, setActiveView] = useState<'overview' | 'plans' | 'settings'>('overview')
     const { t, language, setLanguage } = useLanguage()
+
+    // User stats state
+    const [userStats, setUserStats] = useState<UserStats>({
+        totalTests: 0,
+        averageBandScore: 0,
+        activeStreak: 0,
+        lastActivityDate: '',
+        testResults: []
+    })
 
     // User profile state
     const [userProfile, setUserProfile] = useState<UserProfile>({
@@ -31,6 +41,10 @@ export default function DashboardPage() {
     useEffect(() => {
         const name = localStorage.getItem('userName') || 'User'
         setUserName(name)
+
+        // Load user stats
+        const stats = initializeUserStats()
+        setUserStats(stats)
 
         // Load saved data from localStorage
         const savedProfile = localStorage.getItem('userProfile')
@@ -120,16 +134,16 @@ export default function DashboardPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-            <div className="flex">
+            <div className="flex flex-col lg:flex-row">
                 {/* Main Content */}
-                <div className="flex-1 p-8">
+                <div className="flex-1 p-4 md:p-6 lg:p-8">
                     {/* Header with Language Switcher */}
-                    <div className="flex items-center justify-between mb-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-8">
                         <div>
-                            <h1 className="text-3xl font-bold tracking-tight">
+                            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
                                 {t('dashboard.overview.welcome').replace('{name}', userProfile.name)}
                             </h1>
-                            <p className="text-muted-foreground mt-2">
+                            <p className="text-muted-foreground mt-1 md:mt-2 text-sm md:text-base">
                                 {t('dashboard.overview.subtitle')}
                             </p>
                         </div>
@@ -161,10 +175,11 @@ export default function DashboardPage() {
                     </div>
 
                     {/* View Tabs */}
-                    <div className="flex gap-2 mb-6">
+                    <div className="flex flex-wrap gap-2 mb-6">
                         <Button
                             variant={activeView === 'overview' ? 'default' : 'outline'}
                             onClick={() => setActiveView('overview')}
+                            size="sm"
                         >
                             <BookOpen className="h-4 w-4 mr-2" />
                             {t('dashboard.sidebar.overview')}
@@ -172,6 +187,7 @@ export default function DashboardPage() {
                         <Button
                             variant={activeView === 'plans' ? 'default' : 'outline'}
                             onClick={() => setActiveView('plans')}
+                            size="sm"
                         >
                             <FileText className="h-4 w-4 mr-2" />
                             {t('dashboard.studyPlans.title')}
@@ -179,6 +195,7 @@ export default function DashboardPage() {
                         <Button
                             variant={activeView === 'settings' ? 'default' : 'outline'}
                             onClick={() => setActiveView('settings')}
+                            size="sm"
                         >
                             <Settings className="h-4 w-4 mr-2" />
                             {t('dashboard.settings.title')}
@@ -189,7 +206,7 @@ export default function DashboardPage() {
                     {activeView === 'overview' && (
                         <div className="space-y-6">
                             {/* Status Cards */}
-                            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                                 <Card className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/20 dark:to-orange-900/20 border-orange-200">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                         <CardTitle className="text-sm font-medium">
@@ -198,9 +215,16 @@ export default function DashboardPage() {
                                         <BookOpen className="h-4 w-4 text-orange-600" />
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold text-orange-700">0</div>
+                                        <div className="text-3xl font-bold text-orange-700">{userStats.totalTests}</div>
                                         <p className="text-xs text-orange-600 mt-1">
-                                            {t('dashboard.overview.stats.startFirst')}
+                                            {userStats.totalTests === 0
+                                                ? t('dashboard.overview.stats.startFirst')
+                                                : `+${userStats.testResults.filter(r => {
+                                                    const weekAgo = new Date()
+                                                    weekAgo.setDate(weekAgo.getDate() - 7)
+                                                    return new Date(r.completedAt) > weekAgo
+                                                }).length} this week`
+                                            }
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -208,14 +232,16 @@ export default function DashboardPage() {
                                 <Card className="bg-gradient-to-br from-pink-50 to-pink-100 dark:from-pink-950/20 dark:to-pink-900/20 border-pink-200">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                         <CardTitle className="text-sm font-medium">
-                                            Assignments
+                                            Study Time
                                         </CardTitle>
-                                        <FileText className="h-4 w-4 text-pink-600" />
+                                        <Clock className="h-4 w-4 text-pink-600" />
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold text-pink-700">{studyPlans.filter(p => p.status === 'completed').length}</div>
+                                        <div className="text-3xl font-bold text-pink-700">
+                                            {formatStudyTime(getTotalStudyTime())}
+                                        </div>
                                         <p className="text-xs text-pink-600 mt-1">
-                                            {t('dashboard.studyPlans.completed')}
+                                            Total practice time
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -228,9 +254,14 @@ export default function DashboardPage() {
                                         <Trophy className="h-4 w-4 text-green-600" />
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold text-green-700">-</div>
+                                        <div className="text-3xl font-bold text-green-700">
+                                            {userStats.averageBandScore > 0 ? userStats.averageBandScore : '-'}
+                                        </div>
                                         <p className="text-xs text-green-600 mt-1">
-                                            {t('dashboard.overview.stats.noTests')}
+                                            {userStats.averageBandScore > 0
+                                                ? 'IELTS Band Score'
+                                                : t('dashboard.overview.stats.noTests')
+                                            }
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -243,9 +274,14 @@ export default function DashboardPage() {
                                         <TrendingUp className="h-4 w-4 text-purple-600" />
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-3xl font-bold text-purple-700">1</div>
+                                        <div className="text-3xl font-bold text-purple-700">
+                                            {userStats.activeStreak} {userStats.activeStreak === 1 ? 'Day' : 'Days'}
+                                        </div>
                                         <p className="text-xs text-purple-600 mt-1">
-                                            {t('dashboard.overview.stats.keepItUp')}
+                                            {userStats.activeStreak > 0
+                                                ? t('dashboard.overview.stats.keepItUp')
+                                                : 'Start your streak!'
+                                            }
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -257,7 +293,7 @@ export default function DashboardPage() {
                                     <CardTitle>{t('dashboard.overview.quickStart.title')}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="grid md:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                         <Link href="/dashboard/reading">
                                             <Card className="cursor-pointer hover:bg-muted/50 transition">
                                                 <CardContent className="pt-6">
@@ -303,26 +339,30 @@ export default function DashboardPage() {
                     )}
 
                     {/* Study Plans View */}
-                    {activeView === 'plans' && (
-                        <StudyPlans
-                            plans={studyPlans}
-                            onAddPlan={handleAddPlan}
-                            onDeletePlan={handleDeletePlan}
-                            onUpdatePlan={handleUpdatePlan}
-                        />
-                    )}
+                    {
+                        activeView === 'plans' && (
+                            <StudyPlans
+                                plans={studyPlans}
+                                onAddPlan={handleAddPlan}
+                                onDeletePlan={handleDeletePlan}
+                                onUpdatePlan={handleUpdatePlan}
+                            />
+                        )
+                    }
 
                     {/* Settings View */}
-                    {activeView === 'settings' && (
-                        <UserSettings
-                            profile={userProfile}
-                            onUpdateProfile={handleUpdateProfile}
-                        />
-                    )}
+                    {
+                        activeView === 'settings' && (
+                            <UserSettings
+                                profile={userProfile}
+                                onUpdateProfile={handleUpdateProfile}
+                            />
+                        )
+                    }
                 </div>
 
                 {/* Right Sidebar */}
-                <div className="w-80 p-6 border-l bg-muted/10 space-y-6">
+                <div className="w-full lg:w-80 p-4 md:p-6 border-t lg:border-t-0 lg:border-l bg-muted/10 space-y-6">
                     {/* Calendar */}
                     <Calendar events={calendarEvents} />
 

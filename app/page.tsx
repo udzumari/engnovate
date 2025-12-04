@@ -321,7 +321,7 @@ export default function Home() {
                 <div className="p-1.5 bg-primary rounded-lg">
                   <Users className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <span>EngNovate</span>
+                <span>DomlaAI</span>
               </Link>
               <p className="text-sm text-muted-foreground">
                 {t('footer.desc')}
@@ -359,7 +359,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-border/50 pt-8 text-center text-sm text-muted-foreground">
-            <p>© {new Date().getFullYear()} EngNovate. {t('footer.rights')}</p>
+            <p>© {new Date().getFullYear()} DomlaAI. {t('footer.rights')}</p>
           </div>
         </div>
       </footer>

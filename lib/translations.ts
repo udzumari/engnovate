@@ -116,13 +116,13 @@ export const translations = {
         },
         reviewsPage: {
             title: 'Muvaffaqiyat Hikoyalari',
-            subtitle: 'EngNovate bilan orzusidagi IELTS ballini qo\'lga kiritgan minglab o\'quvchilarga qo\'shiling.',
+            subtitle: 'DomlaAI bilan orzusidagi IELTS ballini qo\'lga kiritgan minglab o\'quvchilarga qo\'shiling.',
             ctaTitle: 'O\'z hikoyangizni bugun boshlang',
             ctaSubtitle: 'IELTS ballingizni tasodifga tashlab qo\'ymang. Eng yaxshi vositalar bilan tayyorlaning.',
-            ctaButton: 'EngNovate-ga Qo\'shilish',
+            ctaButton: 'DomlaAI-ga Qo\'shilish',
         },
         aboutPage: {
-            title: 'EngNovate',
+            title: 'DomlaAI',
             titleHighlight: 'Haqida',
             subtitle: 'Bizning maqsadimiz - texnologiya orqali sifatli IELTS tayyorgarligini hamma uchun ochiq qilish.',
             mission: {
@@ -394,14 +394,14 @@ export const translations = {
         },
         reviewsPage: {
             title: 'Истории Успеха',
-            subtitle: 'Присоединяйтесь к тысячам студентов, которые достигли своей мечты с EngNovate.',
+            subtitle: 'Присоединяйтесь к тысячам студентов, которые достигли своей мечты с DomlaAI.',
             ctaTitle: 'Начните свою историю успеха',
             ctaSubtitle: 'Не оставляйте свой балл IELTS на волю случая. Готовьтесь с лучшими инструментами.',
-            ctaButton: 'Присоединиться к EngNovate',
+            ctaButton: 'Присоединиться к DomlaAI',
         },
         aboutPage: {
             title: 'О проекте',
-            titleHighlight: 'EngNovate',
+            titleHighlight: 'DomlaAI',
             subtitle: 'Наша миссия — демократизировать качественную подготовку к IELTS с помощью технологий.',
             mission: {
                 title: 'Наша Миссия',
@@ -672,14 +672,14 @@ export const translations = {
         },
         reviewsPage: {
             title: 'Success Stories',
-            subtitle: 'Join thousands of students who have achieved their dream IELTS scores with EngNovate.',
+            subtitle: 'Join thousands of students who have achieved their dream IELTS scores with DomlaAI.',
             ctaTitle: 'Start Your Success Story Today',
             ctaSubtitle: 'Don\'t leave your IELTS score to chance. Practice with the best tools available.',
-            ctaButton: 'Join EngNovate Now',
+            ctaButton: 'Join DomlaAI Now',
         },
         aboutPage: {
             title: 'About',
-            titleHighlight: 'EngNovate',
+            titleHighlight: 'DomlaAI',
             subtitle: 'We are on a mission to democratize high-quality IELTS preparation through technology.',
             mission: {
                 title: 'Our Mission',

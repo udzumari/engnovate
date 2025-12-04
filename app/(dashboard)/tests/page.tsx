@@ -6,82 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Clock, BookOpen, PenTool, Mic, Headphones, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useLanguage } from '@/lib/LanguageContext'
-
-// Mock data for tests
-const tests = [
-    {
-        id: 'reading-16',
-        title: 'Cambridge 16 Reading Test 01',
-        type: 'Reading',
-        duration: '60 mins',
-        questions: 7,
-        difficulty: 'Medium',
-        description: 'Why we need to protect polar bears - Complete reading passage with validation',
-    },
-    {
-        id: 'reading-17',
-        title: 'Cambridge 16 Reading Test 02',
-        type: 'Reading',
-        duration: '60 mins',
-        questions: 7,
-        difficulty: 'Medium',
-        description: 'The White Horse of Uffington - Ancient geoglyphs and their mysteries',
-    },
-    {
-        id: 'reading-18',
-        title: 'Cambridge 16 Reading Test 03',
-        type: 'Reading',
-        duration: '60 mins',
-        questions: 7,
-        difficulty: 'Medium',
-        description: 'The Future of Work - AI and automation in the workplace',
-    },
-    {
-        id: 'reading-19',
-        title: 'Cambridge 16 Reading Test 04',
-        type: 'Reading',
-        duration: '60 mins',
-        questions: 7,
-        difficulty: 'Medium',
-        description: 'Roman Shipbuilding and Navigation - Ancient maritime technology',
-    },
-    {
-        id: 'reading-20',
-        title: 'Cambridge 16 Reading Test 05',
-        type: 'Reading',
-        duration: '60 mins',
-        questions: 7,
-        difficulty: 'Medium',
-        description: 'The History of Glass - From ancient times to modern applications',
-    },
-    {
-        id: '2',
-        title: 'IELTS Writing Task (AI Scoring)',
-        type: 'Writing',
-        duration: '40 mins',
-        questions: 1,
-        difficulty: 'Hard',
-        description: 'Write an essay and get instant AI-powered feedback',
-    },
-    {
-        id: '3',
-        title: 'IELTS Speaking Test (AI Scoring)',
-        type: 'Speaking',
-        duration: '4 mins',
-        questions: 1,
-        difficulty: 'Medium',
-        description: 'Record your speaking response and receive detailed scoring',
-    },
-    {
-        id: '4',
-        title: 'IELTS Listening Practice',
-        type: 'Listening',
-        duration: '30 mins',
-        questions: 40,
-        difficulty: 'Medium',
-        description: 'Improve your listening skills with practice tests',
-    },
-]
+import { getAllReadingTests } from '@/data/reading-tests'
 
 const typeIcons = {
     Reading: BookOpen,
@@ -100,18 +25,66 @@ const typeColors = {
 export default function TestsPage() {
     const { t } = useLanguage()
 
+    // Get all reading tests dynamically
+    const readingTests = getAllReadingTests()
+
+    // Convert reading tests to the format expected by the UI
+    const readingTestsFormatted = readingTests.map((test, index) => ({
+        id: test.id,
+        title: `Reading Test ${index + 1}`,
+        type: 'Reading' as const,
+        duration: '60 mins',
+        questions: test.sections.reduce((total, section) => total + section.questions.length, 0) || 40,
+        difficulty: 'Medium' as const,
+        description: test.sections[0]?.title || 'IELTS Academic Reading Practice Test',
+    }))
+
+    // Other test types
+    const otherTests = [
+        {
+            id: '2',
+            title: 'IELTS Writing Task (AI Scoring)',
+            type: 'Writing' as const,
+            duration: '40 mins',
+            questions: 1,
+            difficulty: 'Hard' as const,
+            description: 'Write an essay and get instant AI-powered feedback',
+        },
+        {
+            id: '3',
+            title: 'IELTS Speaking Test (AI Scoring)',
+            type: 'Speaking' as const,
+            duration: '4 mins',
+            questions: 1,
+            difficulty: 'Medium' as const,
+            description: 'Record your speaking response and receive detailed scoring',
+        },
+        {
+            id: '4',
+            title: 'IELTS Listening Practice',
+            type: 'Listening' as const,
+            duration: '30 mins',
+            questions: 40,
+            difficulty: 'Medium' as const,
+            description: 'Improve your listening skills with practice tests',
+        },
+    ]
+
+    // Combine all tests
+    const tests = [...readingTestsFormatted, ...otherTests]
+
     return (
-        <div className="p-8 space-y-8">
-            <div className="flex items-center justify-between">
+        <div className="p-4 md:p-8 space-y-6 md:space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">{t('dashboard.tests.title')}</h1>
-                    <p className="text-muted-foreground mt-2">
+                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{t('dashboard.tests.title')}</h1>
+                    <p className="text-muted-foreground mt-1 md:mt-2 text-sm md:text-base">
                         {t('dashboard.tests.subtitle')}
                     </p>
                 </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {tests.map((test) => {
                     const Icon = typeIcons[test.type as keyof typeof typeIcons]
                     const colorClass = typeColors[test.type as keyof typeof typeColors]

@@ -112,7 +112,7 @@ export default function FeaturesPage() {
 
             <footer className="py-8 border-t bg-muted/20">
                 <div className="container px-4 mx-auto text-center text-sm text-muted-foreground">
-                    <p>© {new Date().getFullYear()} EngNovate. {t('footer.rights')}</p>
+                    <p>© {new Date().getFullYear()} DomlaAI. {t('footer.rights')}</p>
                 </div>
             </footer>
         </div>

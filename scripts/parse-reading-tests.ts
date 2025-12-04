@@ -52,7 +52,10 @@ function parseReadingTest(filePath: string) {
     console.log(`\nParsing: ${path.basename(filePath)}`);
 
     const content = fs.readFileSync(filePath, 'utf-8');
-    const doc: PandocDoc = JSON.parse(content);
+    const data = JSON.parse(content);
+
+    // Pandoc JSON format is [metadata, blocks]
+    const blocks = Array.isArray(data) && data.length > 1 ? data[1] : [];
 
     let testTitle = '';
     let currentPassage = '';
@@ -63,8 +66,8 @@ function parseReadingTest(filePath: string) {
     let questionCounter = 0;
 
     // Process blocks
-    for (let i = 0; i < doc.blocks.length; i++) {
-        const block = doc.blocks[i];
+    for (let i = 0; i < blocks.length; i++) {
+        const block = blocks[i];
         const text = extractParagraphText(block);
 
         // Detect test title
@@ -117,13 +120,28 @@ function parseReadingTest(filePath: string) {
 }
 
 // Main execution
-const readingDir = 'c:\\Users\\admin\\Desktop\\projects\\engnovate\\reading';
+const readingDir = 'c:\\Users\\admin\\Desktop\\engnovate\\reading';
 const jsonFiles = [
-    'READING_16_20251128_081737_b158c8ff.json',
-    'READING_17_20251128_081736_5889708e.json',
-    'READING_18_20251128_081736_8aac5bef.json',
-    'READING_19_20251128_081736_3116e8fe.json',
-    'READING_20_20251128_081736_daae2c99.json'
+    'READING 01.json',
+    'READING 02.json',
+    'READING 03.json',
+    'READING 04.json',
+    'READING 05.json',
+    'READING 06.json',
+    'READING 07.json',
+    'READING 08.json',
+    'READING 09.json',
+    'READING 10.json',
+    'READING 11.json',
+    'READING 12.json',
+    'READING 13.json',
+    'READING 14.json',
+    'READING 15.json',
+    'READING 16.json',
+    'READING 17.json',
+    'READING 18.json',
+    'READING 19.json',
+    'RREADING 20.json'
 ];
 
 console.log('='.repeat(60));

@@ -34,7 +34,7 @@ export function Navbar() {
                     <div className="p-1.5 bg-primary rounded-lg">
                         <GraduationCap className="h-5 w-5 text-primary-foreground" />
                     </div>
-                    <span>EngNovate</span>
+                    <span>DomlaAI</span>
                 </Link>
 
                 {/* Desktop Nav */}

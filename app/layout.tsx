@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EngNovate - AI-Powered IELTS Prep",
+  title: "DomlaAI - AI-Powered IELTS Prep",
   description: "Master IELTS with AI-powered scoring and real exam simulations.",
 };
 
